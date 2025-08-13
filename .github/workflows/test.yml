@@ -102,9 +102,23 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-  PR:
+  PR1:
     needs: push-to-container-registery
     runs-on: ubuntu-latest
     steps:
       - name: salam
         run: echo "hello world"
+  
+  DateTime:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Waktu
+        run: date
+  
+  Who:
+    needs: push-to-container-registery
+    runs-on: ubuntu-latest
+    steps:
+      - name: Siapa
+        run: whoami
