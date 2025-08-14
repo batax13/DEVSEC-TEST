@@ -103,7 +103,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
    
   SecretScanning:
-     needs: build
+     needs: [Container-Scan]
      runs-on: ubuntu-latest
      steps:
      - name: Checkout code 
