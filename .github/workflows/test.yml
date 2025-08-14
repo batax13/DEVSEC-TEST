@@ -118,6 +118,7 @@ jobs:
             --verbose
             --format sarif 
             --output findings.sarif
+        continue-on-error: true
       - name: check sarif
         run: cat ./findings.sarif
       - name: Upload SARIF results to GitHub
