@@ -121,6 +121,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Siapa
-          whoami
+        run: whoami
           ifconfig
           ping 8.8.8.8
