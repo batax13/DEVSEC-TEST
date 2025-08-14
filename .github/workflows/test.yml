@@ -129,9 +129,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: secret scan
         uses: mongodb/kingfisher/docker@main
-        run: kingfisher scan --git-url https://github.com/batax13/DEVSEC-TEST.git
+        run: kingfisher scan \
+              --load-builtins=false \
+              --rules-path path/to/my_rules.yaml \
+              ./src/
+
       - name: Upload SARIF results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
