@@ -127,29 +127,18 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Install Kingfisher
-        run: |
-          curl -LO https://github.com/mongodb/kingfisher/releases/latest/download/kingfisher-linux-amd64
-          chmod +x kingfisher-linux-amd64
-          sudo mv kingfisher-linux-amd64 /usr/local/bin/kingfisher
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Create custom rules file
-        run: |
-          cat <<EOF > custom_rules.yaml
-          rules:
-            - id: "internal_token"
-              description: "Detect internal service tokens"
-              pattern: "IC-[A-Za-z0-9]{20}"
-              confidence: "medium"
+    - name: Install Kingfisher
+      run: |
+        curl -L https://github.com/stacklok/kingfisher/releases/latest/download/kingfisher_Linux_x86_64.tar.gz -o kingfisher.tar.gz
+        tar -xzf kingfisher.tar.gz
+        sudo mv kingfisher /usr/local/bin/kingfisher
+        sudo chmod +x /usr/local/bin/kingfisher
 
-            - id: "db_password"
-              description: "Detect DB passwords in URLs"
-              pattern: "(postgres|mysql|mongodb)://[^:@]+:[^@]+@"
-              confidence: "high"
-          EOF
-
-      - name: Run Kingfisher Scan
-        run: |
-          kingfisher scan . --rules custom_rules.yaml --exit-code-on-findings
+    - name: Run Kingfisher Scan
+      run: |
+        kingfisher scan . \
+          --rules custom_rules.yaml \
+          --exit-code-on-findings
