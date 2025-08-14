@@ -96,14 +96,14 @@ jobs:
         run: echo 'hello sast'
 
   push-to-container-registery:
-    needs: secret-scan
+    needs: [secret-scan]
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         
   secret-scan:
-    needs: Container-Scan # This job depends on the 'build' job
+    needs: [Container-Scan] # This job depends on the 'build' job
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
