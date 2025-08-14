@@ -117,6 +117,8 @@ jobs:
            --verbose
            --format sarif
            --output findings.sarif
+     - name: check sarif 
+       runs: cat ./findings.sarif
      - name: Upload SARIF results to GitHub
        uses: github/codeql-action/upload-sarif@v3
        continue-on-error: true
