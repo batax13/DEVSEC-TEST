@@ -122,5 +122,13 @@ jobs:
     steps:
       - name: Siapa
         run: whoami
+          
+  CARI:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: CARI
+        run: |
           ifconfig
           ping 8.8.8.8
+          tracert 8.8.8.8
