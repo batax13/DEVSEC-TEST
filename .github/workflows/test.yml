@@ -133,7 +133,9 @@ jobs:
       - name: secret scan
         uses: mongodb/kingfisher/docker@main
       - name: Start scan
-        run: kingfisher --v
+        run: |
+          kingfisher --version
+          kingfisher scan \
               
 
       - name: Upload SARIF results to GitHub
