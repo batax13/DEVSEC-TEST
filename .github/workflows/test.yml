@@ -135,7 +135,7 @@ jobs:
       - name: Start scan
         run: kingfisher scan \
               --load-builtins=false \
-              --rules-path path/to/my_rules.yaml \
+              --rules-path .github/workflows/test.yaml\
               ./src/
 
       - name: Upload SARIF results to GitHub
