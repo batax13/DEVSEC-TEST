@@ -134,9 +134,8 @@ jobs:
         uses: mongodb/kingfisher/docker@main
       - name: Start scan
         run: kingfisher scan \
-              --load-builtins=false \
-              --rules-path .github/workflows/test.yaml\
-              ./src/
+              --git-url https://github.com/dependency-check/Dependency-Check_Action.git
+              
 
       - name: Upload SARIF results to GitHub
         uses: github/codeql-action/upload-sarif@v3
