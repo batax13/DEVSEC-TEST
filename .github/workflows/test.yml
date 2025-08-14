@@ -127,17 +127,21 @@ jobs:
     needs: build # This job depends on the 'build' job
     runs-on: ubuntu-latest
     steps:
-      - scan: X
-        name: gitleaks       
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Check folder
+        run: ls -las
+      - name: Run kingfisher
+        uses: mongodb/kingfisher/docker@main
         with:
-          fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE}} # Only required for Organizations, not personal accounts.
-              
+          args: >
+            scan .
+            --verbose
+            --format sarif 
+            --output findings.sarif
+      - name: check sarif
+        run: cat ./findings.sarif
       - name: Upload SARIF results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'secscan-results.sarif'
+          sarif_file: 'findings.sarif'
