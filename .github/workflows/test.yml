@@ -112,7 +112,6 @@ jobs:
         run: ls -las
       - name: Run kingfisher
         uses: mongodb/kingfisher/docker@main
-        continue-on-error: true
         with:
           args: >
             scan .
