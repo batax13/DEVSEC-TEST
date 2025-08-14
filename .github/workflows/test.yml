@@ -123,12 +123,33 @@ jobs:
       - name: Siapa
         run: whoami
           
-  CARI:
+  secret-scan:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: CARI
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Kingfisher
         run: |
-          ifconfig
-          ping 8.8.8.8
-          tracert 8.8.8.8
+          curl -LO https://github.com/mongodb/kingfisher/releases/latest/download/kingfisher-linux-amd64
+          chmod +x kingfisher-linux-amd64
+          sudo mv kingfisher-linux-amd64 /usr/local/bin/kingfisher
+
+      - name: Create custom rules file
+        run: |
+          cat <<EOF > custom_rules.yaml
+          rules:
+            - id: "internal_token"
+              description: "Detect internal service tokens"
+              pattern: "IC-[A-Za-z0-9]{20}"
+              confidence: "medium"
+
+            - id: "db_password"
+              description: "Detect DB passwords in URLs"
+              pattern: "(postgres|mysql|mongodb)://[^:@]+:[^@]+@"
+              confidence: "high"
+          EOF
+
+      - name: Run Kingfisher Scan
+        run: |
+          kingfisher scan . --rules custom_rules.yaml --exit-code-on-findings
