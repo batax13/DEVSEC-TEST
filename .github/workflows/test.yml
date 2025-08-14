@@ -112,7 +112,7 @@ jobs:
         run: ls -las    # This job listing folder https://github.com/batax13/DEVSEC-TEST
       - name: Run kingfisher
         uses: mongodb/kingfisher/docker@main
-          continue-on-error: true
+        continue-on-error: true
         with:
           args: >
             scan .
