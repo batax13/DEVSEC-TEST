@@ -133,8 +133,7 @@ jobs:
       - name: secret scan
         uses: mongodb/kingfisher/docker@main
       - name: Start scan
-        run: kingfisher scan \
-              --git-url https://github.com/dependency-check/Dependency-Check_Action.git
+        run: kingfisher --v
               
 
       - name: Upload SARIF results to GitHub
