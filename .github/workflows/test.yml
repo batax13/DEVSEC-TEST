@@ -1,9 +1,9 @@
 name: DevSecops
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -95,19 +95,14 @@ jobs:
       - name: run SAST scan
         run: echo 'hello sast'
 
-  push-to-container-registery:
-    needs: [secret-scan]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        
-  secret-scan:
-    needs: [build]
+  secret-scanning-kingfisher: 
+    needs: [Container-Scan]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Check folder
+        run: ls -las
       - name: Run kingfisher
         uses: mongodb/kingfisher/docker@main
         continue-on-error: true 
@@ -117,7 +112,42 @@ jobs:
             --verbose
             --format sarif 
             --output findings.sarif
+      - name: check sarif
+        run: cat ./findings.sarif
       - name: Upload SARIF results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'findings.sarif'
+  
+  secret-scanning-trufflehog:
+    needs: [Container-Scan]
+    runs-on: ubuntu-latest
+    # container:
+    #   image: trufflesecurity/trufflehog:latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          # Repository path
+          path: .
+          # Start scanning from here (usually main branch).
+          extra_args: --log-level=2 --results=verified,unknown
+
+
+  push-to-container-registery:
+    needs: [secret-scanning-kingfisher, secret-scanning-trufflehog]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+  
+  deploy:
+    needs: push-to-container-registery
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploying to GCP
+        run: echo 'deployed'
