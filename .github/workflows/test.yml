@@ -132,6 +132,7 @@ jobs:
 
       - name: secret scan
         uses: mongodb/kingfisher/docker@main
+      - name: Start scan
         run: kingfisher scan \
               --load-builtins=false \
               --rules-path path/to/my_rules.yaml \
