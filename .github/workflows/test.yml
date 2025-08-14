@@ -108,8 +108,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Check folder
-        run: ls -las
       - name: Run kingfisher
         uses: mongodb/kingfisher/docker@main
         continue-on-error: true 
@@ -119,8 +117,6 @@ jobs:
             --verbose
             --format sarif 
             --output findings.sarif
-      - name: check sarif
-        run: cat ./findings.sarif
       - name: Upload SARIF results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
