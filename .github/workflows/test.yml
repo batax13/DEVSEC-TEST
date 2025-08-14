@@ -66,7 +66,7 @@ jobs:
         if: always()
 
   Container-Scan:
-    needs: build # This job depends on the 'build' job
+    needs: [SCA, SAST, DAST] # This job depends on the 'build' job
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -96,43 +96,23 @@ jobs:
         run: echo 'hello sast'
 
   push-to-container-registery:
-    needs: [SCA, SAST, Container-Scan, DAST]
+    needs: secret-scan
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-  PR1:
-    needs: push-to-container-registery
-    runs-on: ubuntu-latest
-    steps:
-      - name: salam
-        run: echo "hello world"
-  
-  DateTime:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Waktu
-        run: date
-  
-  Who:
-    needs: push-to-container-registery
-    runs-on: ubuntu-latest
-    steps:
-      - name: Siapa
-        run: whoami
-          
+        
   secret-scan:
-    needs: build # This job depends on the 'build' job
+    needs: Container-Scan # This job depends on the 'build' job
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Check folder
-        run: ls -las
+        run: ls -las    # This job listing folder https://github.com/batax13/DEVSEC-TEST
       - name: Run kingfisher
         uses: mongodb/kingfisher/docker@main
+          continue-on-error: true
         with:
           args: >
             scan .
